@@ -1,185 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Voting dApp</title>
-  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Proposal Voting dApp</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Voting dApp</h1>
+  <div class="container">
+    <h1>🗳 Proposal Voting</h1>
+    <p id="proposal-text">
+      Proposal: <strong>Add "Nobeanking" as an official concept on the EVM blockchain.</strong>
+    </p>
 
-  <button onclick="connectWallet()">Connect Wallet</button>
-  <p id="walletAddress"></p>
+    <div id="candidate-container">
+      <h2>Candidate: <span id="candidateName">Loading...</span></h2>
+      <p>Votes: <span id="voteCount">0</span></p>
+      <button id="voteBtn">Vote</button>
+    </div>
 
-  <h2>Add Candidate (Owner Only)</h2>
-  <input type="text" id="candidateName" placeholder="Enter name" />
-  <button onclick="addCandidate()">Add</button>
+    <button id="connectBtn">Connect Wallet</button>
+    <p id="status"></p>
+  </div>
 
-  <h2>Vote for Candidate</h2>
-  <input type="number" id="voteId" placeholder="Candidate ID" />
-  <button onclick="voteCandidate()">Vote</button>
-
-  <h2>Candidate Info</h2>
-  <button onclick="showCandidate()">Show First Candidate (ID 0)</button>
-  <p id="candidateInfo"></p>
-
-  <script>
-    const contractAddress = "0x69d558a78ABCf0482a6957D28EA4252eAc586f02";
-
-    const abi = [
-      {
-        "inputs": [
-          {
-            "internalType": "string",
-            "name": "_name",
-            "type": "string"
-          }
-        ],
-        "name": "addCandidate",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "uint256",
-            "name": "candidateId",
-            "type": "uint256"
-          }
-        ],
-        "name": "vote",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "name": "candidates",
-        "outputs": [
-          {
-            "internalType": "string",
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "internalType": "uint256",
-            "name": "votecount",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [],
-        "name": "candidatesCount",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "uint256",
-            "name": "id",
-            "type": "uint256"
-          }
-        ],
-        "name": "getCandidate",
-        "outputs": [
-          {
-            "internalType": "string",
-            "name": "",
-            "type": "string"
-          },
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "",
-            "type": "address"
-          }
-        ],
-        "name": "hasVoted",
-        "outputs": [
-          {
-            "internalType": "bool",
-            "name": "",
-            "type": "bool"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      },
-      {
-        "inputs": [],
-        "name": "owner",
-        "outputs": [
-          {
-            "internalType": "address",
-            "name": "",
-            "type": "address"
-          }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-      }
-    ];
-
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const contract = new ethers.Contract(contractAddress, abi, signer);
-
-    async function connectWallet() {
-      await provider.send("eth_requestAccounts", []);
-      const address = await signer.getAddress();
-      document.getElementById("walletAddress").innerText = Connected: ${address};
-    }
-async function addCandidate() {
-      const name = document.getElementById("candidateName").value;
-      const tx = await contract.addCandidate(name);
-      await tx.wait();
-      alert("Candidate Added!");
-    }
-
-    async function voteCandidate() {
-      const id = document.getElementById("voteId").value;
-      const tx = await contract.vote(id);
-      await tx.wait();
-      alert("Voted!");
-    }
-
-    async function showCandidate() {
-      const candidate = await contract.candidates(0); // show ID 0
-      document.getElementById("candidateInfo").innerText =
-        Name: ${candidate.name}, Votes: ${candidate.votecount.toString()};
-    }
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
